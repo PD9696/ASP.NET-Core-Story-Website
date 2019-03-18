@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WebApplication3.Data;
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@model IEnumerable<WebApplication3.Models.FollowerList>
+
+@foreach (var item in Model)
+{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var currentUserProfileId = currentUser.GetProfileId();
+
+    @section ToShow {
+        if (item.FollowerId == currentUserProfileId)
+        {
+            <form asp-controller="FollowerLists" asp-action="UnFollow">
+                <input type="hidden" name="idBeingFollowed" asp-for="@item.ProfileId" />
+                <div class="form-group">
+                    <input type="submit" value="Follow" class="btn btn-default" />
+                </div>
+            </form>
+        }
+    }
+}
+

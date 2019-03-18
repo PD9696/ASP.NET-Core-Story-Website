@@ -1,0 +1,25 @@
+﻿@model WebApplication3.Models.Profile
+
+@{
+    ViewData["Title"] = "Delete";
+}
+<h2>Delete "@Html.DisplayFor(model => model.UserName)"?</h2>
+
+<h3>Are you sure you want to delete your public profile?</h3>
+
+<p>All of your written stories and follower count will be deleted.</p>
+
+<p>Your lists of liked stories and followed accounts will also be deleted.</p>
+
+<p><strong>You will not be able to recover this profile.</strong></p>
+
+<p>However, you may be able to create a new public profile (with your same account) from a clean slate at a future date should you choose.</p>
+
+<p><strong>Note that deleting your public profile does not delete your account.</strong></p>
+
+<p>If you wish to delete your full account (pertaining your public profile <strong>as well as sign in information</strong>), please visit <a asp-area="Identity" asp-page="/Account/Manage/PersonalData" title="Manage">your account page.</a></p>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <input type="submit" value="Delete Profile" class="btn btn-default" />
+</form>

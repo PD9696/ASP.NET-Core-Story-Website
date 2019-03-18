@@ -1,0 +1,266 @@
+﻿@page "{id}"
+@model LikesModel
+@{
+    ViewData["Title"] = "Liked Stories";
+    Layout = "_Layout.cshtml";
+}
+
+@{ var passedId = ViewContext.RouteData.Values["id"].ToString();
+    Model.SetProfile(passedId);
+    int numStories = Model.GetLikedStories(passedId);
+}
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@section Header {
+    <div class="row">
+        <div class="col-md-3">
+            <h2>@ViewData["name"]</h2>
+
+            <p>Member since @ViewData["date"]</p>
+        </div>
+        <div class="col-md-3">
+            @if (ViewData["numFollowers"].ToString() == "1")
+            {
+                <p>@ViewData["numFollowers"] follower</p>
+            }
+            else
+            {
+                <p>@ViewData["numFollowers"] followers</p>
+            }
+        </div>
+        <div class="col-md-3">
+            
+        </div>
+        <div class="col-md-3">
+            @{ if (SignInManager.IsSignedIn(User))
+                {
+                    var currentUser = await UserManager.GetUserAsync(User);
+                    var currentUserProfileId = currentUser.GetProfileId();
+                    Model.isFollowing(passedId, currentUserProfileId);
+                    string url = Request.GetDisplayUrl();
+                    if (ViewData["profileId"].ToString() == currentUserProfileId.ToString())
+                    {
+                        <p></p>
+                        <a asp-controller="Profiles" asp-action="Edit" asp-route-id="@ViewData["profileId"]">Edit your Profile</a>
+                    }
+                    else if (currentUserProfileId == 0)
+                    {
+                        <p></p>
+                        <a asp-controller="Profiles" asp-action="Create">Finish your profile to follow this user</a>
+                    }
+                    else
+                    {
+                        if (ViewData["following"].ToString() == "1")
+                        {
+                            <form asp-controller="FollowerLists" asp-action="UnFollow1">
+                                <input type="hidden" name="idBeingFollowed" asp-for="@ViewData["profileId"]" />
+                                <input type="hidden" name="returnUrl" asp-for="@url" />
+                                <div class="form-group">
+                                    <input type="submit" value="Unfollow" class="btn btn-default" />
+                                </div>
+                            </form>
+                        }
+                        else if (ViewData["following"].ToString() == "2")
+                        {
+                            <form asp-controller="FollowerLists" asp-action="Follow1">
+                                <input type="hidden" name="idBeingFollowed" asp-for="@ViewData["profileId"]" />
+                                <input type="hidden" name="returnUrl" asp-for="@url" />
+                                <div class="form-group">
+                                    <input type="submit" value="Follow" class="btn btn-default" />
+                                </div>
+                            </form>
+                        }
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md">
+            @if (ViewData["description"] != null)
+            {
+                <h6>"@ViewData["description"]"</h6>
+            }
+        </div>
+    </div>
+}
+
+<h3>@ViewData["name"]'s liked stories</h3>
+
+<div class="row">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Author
+                </th>
+                <th>
+                    Genre
+                </th>
+                <th>
+                    Estimated Reading Length
+                </th>
+                <th>
+                    Likes
+                </th>
+                <th>
+                    Posted
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < numStories; i++)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Stories" asp-action="Details" asp-route-id="@ViewData["id" + i.ToString()]">@ViewData["title" + i.ToString()]</a>
+                    </td>
+                    <td>
+                        <a asp-area="ViewProfile" asp-page="/Index" title="Pictures" asp-route-id="@ViewData["profileId" + i.ToString()]">@ViewData["author" + i.ToString()]</a>
+                    </td>
+                    <td>
+                        @ViewData["genre" + i.ToString()]
+                    </td>
+                    <td>
+                        @if (ViewData["minutes" + i.ToString()].ToString() == "1")
+                        {
+                            if (ViewData["seconds" + i.ToString()].ToString() == "0")
+                            {
+                                <p>1 minute</p>
+                            }
+                            else if (ViewData["seconds" + i.ToString()].ToString() == "1")
+                            {
+                                <p>1 minute and 1 second</p>
+                            }
+                            else if (ViewData["seconds" + i.ToString()].ToString() == "60")
+                            {
+                                <p>2 minutes</p>
+                            }
+                            else
+                            {
+                                <p>1 minute and @ViewData["seconds" + i.ToString()].ToString() seconds</p>
+                            }
+                        }
+                        else if (ViewData["minutes" + i.ToString()].ToString() == "0")
+                        {
+                            if (ViewData["seconds" + i.ToString()].ToString() == "0")
+                            {
+                                <p>0 seconds</p>
+                            }
+                            else if (ViewData["seconds" + i.ToString()].ToString() == "1")
+                            {
+                                <p>1 second</p>
+                            }
+                            else if (ViewData["seconds" + i.ToString()].ToString() == "60")
+                            {
+                                <p>1 minute</p>
+                            }
+                            else
+                            {
+                                <p>@ViewData["seconds" + i.ToString()].ToString() seconds</p>
+                            }
+                        }
+                        else
+                        {
+                            if (ViewData["seconds" + i.ToString()].ToString() == "0")
+                            {
+                                <p>@ViewData["minutes" + i.ToString()].ToString() minutes</p>
+                            }
+                            else if (ViewData["seconds" + i.ToString()].ToString() == "1")
+                            {
+                                <p>@ViewData["minutes" + i.ToString()].ToString() minutes and 1 second</p>
+                            }
+                            else if (ViewData["seconds" + i.ToString()].ToString() == "60")
+                            {
+                                int min = (int)ViewData["minutes" + i.ToString()] + 1;
+                                <p>@min minutes</p>
+                            }
+                            else
+                            {
+                                <p>@ViewData["minutes" + i.ToString()].ToString() minutes and @ViewData["seconds" + i.ToString()].ToString() seconds</p>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @ViewData["likes" + i.ToString()]
+                    </td>
+                    <td>
+                        @{ var now = DateTime.Now;
+                            var oldDate = Convert.ToDateTime(ViewData["date" + i.ToString()]);
+                            var difference = now - oldDate;
+                            var months = difference.Days / 30;
+                            var days = difference.Days;
+                            var hours = difference.Hours;
+                            var minutes = difference.Minutes;
+                            var seconds = difference.Seconds;}
+
+                        @if (days == 0 && hours == 0 && minutes == 0)
+                        {
+                            if (seconds == 1)
+                            {
+                                <p>@seconds second ago</p>
+                            }
+                            else
+                            {
+                                <p>@seconds seconds ago</p>
+                            }
+                        }
+                        else if (days == 0 && hours == 0 && minutes >= 1)
+                        {
+                            if (minutes == 1)
+                            {
+                                <p>@minutes minute ago</p>
+                            }
+                            else
+                            {
+                                <p>@minutes minutes ago</p>
+                            }
+                        }
+                        else if (days == 0 && hours >= 1)
+                        {
+                            if (hours == 1)
+                            {
+                                <p>@hours hour ago</p>
+                            }
+                            else
+                            {
+                                <p>@hours hour ago</p>
+                            }
+                        }
+                        else if (days < 31 && days >= 1)
+                        {
+                            if (days == 1)
+                            {
+                                <p>@days day ago</p>
+                            }
+                            else
+                            {
+                                <p>@days days ago</p>
+                            }
+                        }
+                        else if (days < 365 && days >= 31)
+                        {
+                            if (days == 30)
+                            {
+                                <p>1 month ago</p>
+                            }
+                            else
+                            {
+                                <p>@months months ago</p>
+                            }
+                        }
+                        else
+                        {
+                            <p>Over a year ago</p>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

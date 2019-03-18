@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WebApplication3.Data;
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "ProfileAlreadyCreated";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>You already have a profile!</h2>
+
+@{ var currentUser = await UserManager.GetUserAsync(User);
+    var currentUserProfileId = currentUser.GetProfileId();
+    if (SignInManager.IsSignedIn(User))
+    {
+        <p>You may <a asp-area="" asp-controller="Profiles" asp-action="Edit" asp-route-id=@currentUserProfileId>edit it here</a>.</p>
+    }
+}
+
+

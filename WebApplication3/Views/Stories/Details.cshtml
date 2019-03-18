@@ -1,0 +1,336 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WebApplication3.Data;
+@using Microsoft.AspNetCore.Http.Extensions
+@using System.Runtime.InteropServices
+@using System.Text;
+
+@model WebApplication3.Models.Story
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    StringBuilder inputStory = new StringBuilder(Model.Content);
+    inputStory.Replace("\r\n", "\n");
+    inputStory.Replace("\n", "\r");
+    inputStory.Replace("\r", "<br/>");
+
+    var Story = inputStory.ToString();
+}
+
+<h2>@Html.DisplayFor(model => model.Title)</h2>
+
+<div class="row">
+    <div class="col-md-3">
+        <h4>By <a asp-area="ViewProfile" asp-page="/Index" title="Pictures" asp-route-id="@Model.ProfileId">@Html.DisplayFor(model => model.Author)</a></h4>
+
+        @{ var now = DateTime.Now;
+            var oldDate = Model.CreationDate;
+            var editDate = Model.EditDate;
+            var difference = now - oldDate;
+            var difference2 = now - editDate;
+            var months = difference.Days / 30;
+            var days = difference.Days;
+            var hours = difference.Hours;
+            var minutes = difference.Minutes;
+            var seconds = difference.Seconds;
+            var months2 = difference2.Days / 30;
+            var days2 = difference2.Days;
+            var hours2 = difference2.Hours;
+            var minutes2 = difference2.Minutes;
+            var seconds2 = difference2.Seconds;}
+
+        @if (days == 0 && hours == 0 && minutes == 0)
+        {
+            if (seconds == 1)
+            {
+                <p>Posted @seconds second ago</p>
+            }
+            else
+            {
+                <p>Posted @seconds seconds ago</p>
+            }
+        }
+        else if (days == 0 && hours == 0 && minutes >= 1)
+        {
+            if (minutes == 1)
+            {
+                <p>Posted @minutes minute ago</p>
+            }
+            else
+            {
+                <p>Posted @minutes minutes ago</p>
+            }
+        }
+        else if (days == 0 && hours >= 1)
+        {
+            if (hours == 1)
+            {
+                <p>Posted @hours hour ago</p>
+            }
+            else
+            {
+                <p>Posted @hours hours ago</p>
+            }
+        }
+        else if (days < 31 && days >= 1)
+        {
+            if (days == 1)
+            {
+                <p>Posted @days day ago</p>
+            }
+            else
+            {
+                <p>Posted @days days ago</p>
+            }
+        }
+        else if (days < 365 && days >= 31)
+        {
+            if (days == 30)
+            {
+                <p>Posted @months month ago</p>
+            }
+            else
+            {
+                <p>Posted @months months ago</p>
+            }
+        }
+        else
+        {
+            <p>Posted over a year ago</p>
+        }
+
+        @if (Model.IsEdited == true)
+        {
+            if (days2 == 0 && hours2 == 0 && minutes2 == 0)
+            {
+                if (seconds2 == 1)
+                {
+                    <p>Edited @seconds2 second ago</p>
+                }
+                else
+                {
+                    <p>Edited @seconds2 seconds ago</p>
+                }
+            }
+            else if (days2 == 0 && hours2 == 0 && minutes2 >= 1)
+            {
+                if (minutes2 == 1)
+                {
+                    <p>Edited @minutes2 minute ago</p>
+                }
+                else
+                {
+                    <p>Edited @minutes2 minutes ago</p>
+                }
+            }
+            else if (days2 == 0 && hours2 >= 1)
+            {
+                if (hours2 == 1)
+                {
+                    <p>Edited @hours2 hour ago</p>
+                }
+                else
+                {
+                    <p>Edited @hours2 hours ago</p>
+                }
+            }
+            else if (days2 < 31 && days2 >= 1)
+            {
+                if (days2 == 1)
+                {
+                    <p>Edited @days2 day ago</p>
+                }
+                else
+                {
+                    <p>Edited @days2 days ago</p>
+                }
+            }
+            else if (days2 < 365 && days2 >= 31)
+            {
+                if (days2 == 30)
+                {
+                    <p>Edited @months2 month ago</p>
+                }
+                else
+                {
+                    <p>Edited @months2 months ago</p>
+                }
+            }
+            else
+            {
+                <p>Edited over a year ago</p>
+            }
+        }
+
+        @if (Model.EstimatedLength == 1)
+        {
+            if (Model.EstimatedLengthSeconds == 0)
+            {
+                <p>About 1 minute long</p>
+            }
+            else if (Model.EstimatedLengthSeconds == 1)
+            {
+                <p>About 1 minute and 1 second long</p>
+            }
+            else if (Model.EstimatedLengthSeconds == 60)
+            {
+                <p>About 2 minutes long</p>
+            }
+            else
+            {
+                <p>About 1 minute and @Html.DisplayFor(model => model.EstimatedLengthSeconds) seconds long</p>
+            }
+        }
+        else if (Model.EstimatedLength == 0)
+        {
+            if (Model.EstimatedLengthSeconds == 0)
+            {
+                <p>About 0 seconds long</p>
+            }
+            else if (Model.EstimatedLengthSeconds == 1)
+            {
+                <p>About 1 second long</p>
+            }
+            else if (Model.EstimatedLengthSeconds == 60)
+            {
+                <p>About 1 minute long</p>
+            }
+            else
+            {
+                <p>About @Html.DisplayFor(model => model.EstimatedLengthSeconds) seconds long</p>
+            }
+        }
+        else
+        {
+            if (Model.EstimatedLengthSeconds == 0)
+            {
+                <p>About @Html.DisplayFor(model => model.EstimatedLength) minutes long</p>
+            }
+            else if (Model.EstimatedLengthSeconds == 1)
+            {
+                <p>About @Html.DisplayFor(model => model.EstimatedLength) minutes and 1 second long</p>
+            }
+            else if (Model.EstimatedLengthSeconds == 60)
+            {
+                int min = Model.EstimatedLength + 1;
+                <p>About @min minutes long</p>
+            }
+            else
+            {
+                <p>About @Html.DisplayFor(model => model.EstimatedLength) minutes and @Html.DisplayFor(model => model.EstimatedLengthSeconds) seconds long</p>
+            }
+        }
+
+    </div>
+    <div class="col-md-3">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            var currentUser = await UserManager.GetUserAsync(User);
+            var currentUserProfileId = currentUser.GetProfileId();
+            if (Model.ProfileId == currentUserProfileId)
+            {
+                <p><a asp-action="Edit" asp-route-id="@Model.Id">Edit this Story</a></p>
+                <p><a asp-action="Delete" asp-route-id="@Model.Id">Delete this Story</a></p>
+            }
+        }
+    </div>
+    <div class="col-md-3">
+
+    </div>
+    <div class="col-md-3">
+        @if (Model.Likes == 1)
+        {
+            <label class="control-label">@Model.Likes Like</label>
+        }
+        else
+        {
+            <label class="control-label">@Model.Likes Likes</label>
+        }
+
+        @if (SignInManager.IsSignedIn(User))
+        {
+            var currentUser = await UserManager.GetUserAsync(User);
+            var currentUserProfileId = currentUser.GetProfileId();
+            string url = Context.Request.GetDisplayUrl();
+
+            if (ViewData["isLiked"].ToString() == "yes")
+            {
+                <form asp-action="UnLike">
+                    <input type="hidden" name="storyId" asp-for="@Model.Id" />
+                    <input type="hidden" name="returnUrl" asp-for="@url" />
+                    <div class="form-group">
+                        <input type="submit" value="❌ Remove Like" class="btn btn-default" />
+                    </div>
+                </form>
+            }
+            else
+            {
+                <form asp-action="Like">
+                    <input type="hidden" name="storyId" asp-for="@Model.Id" />
+                    <input type="hidden" name="returnUrl" asp-for="@url" />
+                    <div class="form-group">
+                        <input type="submit" value="✅ Like This Story" class="btn btn-default" />
+                    </div>
+                </form>
+            }
+        }
+        else
+        {
+            <p><a asp-area="Identity" asp-page="/Account/Register">Sign up to like this story</a></p>
+        }
+    </div>
+</div>
+
+<style>
+    .custom-font {
+        color: #D3D3D3;
+        font-size: 17px;
+    }
+</style>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal custom-font">
+        @{
+            int i = 6;
+            bool print = true;
+        }
+        @foreach (char letter in Story)
+        {
+            if (letter == '<')
+            {
+                i--;
+                <br />
+            }
+            else
+            {
+                if (i != 6)
+                {
+                    i--;
+                }
+
+                if (i == 1)
+                {
+                    i = 6;
+                    print = false;
+                }
+
+                if (i == 6 && print == true)
+                {
+                    @letter
+                }
+
+                print = true;
+            }
+        }
+    </dl>
+
+    <hr />
+    <div>
+        <a asp-action="Index"><strong>Find another story</strong></a>
+    </div>
+</div>

@@ -1,0 +1,161 @@
+﻿@page "{id}"
+@model FollowersModel
+@{
+    ViewData["Title"] = "Profile Followers";
+    Layout = "_Layout.cshtml";
+}
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{ var passedId = ViewContext.RouteData.Values["id"].ToString();
+    Model.SetProfile(passedId);
+    int numFollowers = Model.GetFollowers(passedId);
+}
+
+@section Header {
+    <div class="row">
+        <div class="col-md-3">
+            <h2>@ViewData["name"]</h2>
+
+            <p>Member since @ViewData["date"]</p>
+        </div>
+        <div class="col-md-3">
+            @if (ViewData["numFollowers"].ToString() == "1")
+            {
+                <p>@ViewData["numFollowers"] follower</p>
+            }
+            else
+            {
+                <p>@ViewData["numFollowers"] followers</p>
+            }
+        </div>
+        <div class="col-md-3">
+            
+        </div>
+        <div class="col-md-3">
+            @{ if (SignInManager.IsSignedIn(User))
+                {
+                    var currentUser = await UserManager.GetUserAsync(User);
+                    var currentUserProfileId = currentUser.GetProfileId();
+                    Model.isFollowing(passedId, currentUserProfileId);
+                    string url = Request.GetDisplayUrl();
+                    if (ViewData["profileId"].ToString() == currentUserProfileId.ToString())
+                    {
+                        <p></p>
+                        <a asp-controller="Profiles" asp-action="Edit" asp-route-id="@ViewData["profileId"]">Edit your Profile</a>
+                    }
+                    else if (currentUserProfileId == 0)
+                    {
+                        <p></p>
+                        <a asp-controller="Profiles" asp-action="Create">Finish your profile to follow this user</a>
+                    }
+                    else
+                    {
+                        if (ViewData["following"].ToString() == "1")
+                        {
+                            <form asp-controller="FollowerLists" asp-action="UnFollow1">
+                                <input type="hidden" name="idBeingFollowed" asp-for="@ViewData["profileId"]" />
+                                <input type="hidden" name="returnUrl" asp-for="@url" />
+                                <div class="form-group">
+                                    <input type="submit" value="Unfollow" class="btn btn-default" />
+                                </div>
+                            </form>
+                        }
+                        else if (ViewData["following"].ToString() == "2")
+                        {
+                            <form asp-controller="FollowerLists" asp-action="Follow1">
+                                <input type="hidden" name="idBeingFollowed" asp-for="@ViewData["profileId"]" />
+                                <input type="hidden" name="returnUrl" asp-for="@url" />
+                                <div class="form-group">
+                                    <input type="submit" value="Follow" class="btn btn-default" />
+                                </div>
+                            </form>
+                        }
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md">
+            @if (ViewData["description"] != null)
+            {
+                <h6>"@ViewData["description"]"</h6>
+            }
+        </div>
+    </div>
+    }
+
+    <h3>@ViewData["name"]'s followers</h3>
+
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < numFollowers; i++)
+                {
+                    <tr>
+                        <td>
+                            <a asp-area="ViewProfile" asp-page="/Index" title="Pictures" asp-route-id="@ViewData["id" + i.ToString()]">@ViewData["name" + i.ToString()]</a>
+                        </td>
+                        <td>
+                            @{var currentUser = await UserManager.GetUserAsync(User);
+                                var currentUserProfileId = -1;
+                                if (currentUser != null)
+                                {
+                                    currentUserProfileId = currentUser.GetProfileId();
+                                    var currentUserUserId = currentUser.Id;
+                                    Model.setUser(currentUserUserId);
+                                }
+                                string url = Request.GetDisplayUrl();
+                                int followedByUser = Model.IsFollowedByUser(ViewData["id" + i.ToString()].ToString());
+                            }
+
+                            @if (SignInManager.IsSignedIn(User) && currentUserProfileId > 0)
+                            {
+                                if (ViewData["id" + i.ToString()].ToString() == currentUserProfileId.ToString())
+                                {
+                                    <p><a asp-controller="Profiles" asp-action="Edit" asp-route-id="@currentUserProfileId">Edit</a></p>
+                                }
+                                else if (followedByUser == 1)
+                                {
+                                    <form asp-controller="FollowerLists" asp-action="UnFollow1">
+                                        <input type="hidden" name="idBeingFollowed" asp-for="@ViewData["id" + i.ToString()]" />
+                                        <input type="hidden" name="returnUrl" asp-for="@url" />
+                                        <div class="form-group">
+                                            <input type="submit" value="Unfollow" class="btn btn-default" />
+                                        </div>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-controller="FollowerLists" asp-action="Follow1">
+                                        <input type="hidden" name="idBeingFollowed" asp-for="@ViewData["id" + i.ToString()]" />
+                                        <input type="hidden" name="returnUrl" asp-for="@url" />
+                                        <div class="form-group">
+                                            <input type="submit" value="Follow" class="btn btn-default" />
+                                        </div>
+                                    </form>
+                                }
+                            }
+                            else if (SignInManager.IsSignedIn(User) && currentUserProfileId == 0)
+                            {
+                                <p><a asp-controller="Profiles" asp-action="Create">Create a profile to follow this user</a></p>
+                            }
+                            else
+                            {
+                                <p><a asp-area="Identity" asp-page="/Account/Register">Sign up to follow this user</a></p>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>

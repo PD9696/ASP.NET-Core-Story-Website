@@ -1,0 +1,236 @@
+﻿@model IEnumerable<WebApplication3.Models.Story>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Stories</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <h4>Filter by:</h4>
+        <form asp-controller="Stories" asp-action="Index" method="get">
+            <div class="form-group">
+                <label>Title: </label>
+                <input type="text" name="title" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Author: </label>
+                <input type="text" name="author" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="control-label">Genre: </label>
+                <select name="genre" class="form-control">
+                    <option value="" selected disabled hidden>Any</option>
+                    <option value="Action/Adventure">Action/Adventure</option>
+                    <option value="Classic">Classic</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Fable">Fable</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Horror">Horror</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Mythology">Mythology</option>
+                    <option value="Science Fiction">Science Fiction</option>
+                    <option value="Suspense/Thriller">Suspense/Thriller</option>
+                    <option value="Western">Western</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Reading length: </label>
+                <select name="length" class="form-control">
+                    <option value="" selected disabled hidden>Any</option>
+                    <option value="Very short">Very short (under 5 minutes)</option>
+                    <option value="Short">Short (5 to 10 minutes)</option>
+                    <option value="Medium">Medium (10 to 20 minutes)</option>
+                    <option value="Long">Long (20 to 30 minutes)</option>
+                    <option value="Very long">Very long (over 30 minutes)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Order By: </label>
+                <select name="order" class="form-control">
+                    <option value="New">Newest</option>
+                    <option value="Old">Oldest</option>
+                    <option value="Most">Most likes</option>
+                    <option value="Least">Least likes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Filter" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Author
+            </th>
+            <th>
+                Genre
+            </th>
+            <th>
+                Estimated Reading Length
+            </th>
+            <th>
+                Likes
+            </th>
+            <th>
+                Posted
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
+            </td>
+            <td>
+                <a asp-area="ViewProfile" asp-page="/Index" title="Pictures" asp-route-id="@item.ProfileId">@Html.DisplayFor(modelItem => item.Author)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
+            <td>
+                @if (item.EstimatedLength == 1)
+                {
+                    if (item.EstimatedLengthSeconds == 0)
+                    {
+                        <p>1 minute</p>
+                    }
+                    else if (item.EstimatedLengthSeconds == 1)
+                    {
+                        <p>1 minute and 1 second</p>
+                    }
+                    else if (item.EstimatedLengthSeconds == 60)
+                    {
+                        <p>2 minutes</p>
+                    }
+                    else
+                    {
+                        <p>1 minute and @Html.DisplayFor(model => item.EstimatedLengthSeconds) seconds</p>
+                    }
+                }
+                else if (item.EstimatedLength == 0)
+                {
+                    if (item.EstimatedLengthSeconds == 0)
+                    {
+                        <p>0 seconds</p>
+                    }
+                    else if (item.EstimatedLengthSeconds == 1)
+                    {
+                        <p>1 second</p>
+                    }
+                    else if (item.EstimatedLengthSeconds == 60)
+                    {
+                        <p>1 minute</p>
+                    }
+                    else
+                    {
+                        <p>@Html.DisplayFor(model => item.EstimatedLengthSeconds) seconds</p>
+                    }
+                }
+                else
+                {
+                    if (item.EstimatedLengthSeconds == 0)
+                    {
+                        <p>@Html.DisplayFor(model => item.EstimatedLength) minutes</p>
+                    }
+                    else if (item.EstimatedLengthSeconds == 1)
+                    {
+                        <p>@Html.DisplayFor(model => item.EstimatedLength) minutes and 1 second</p>
+                    }
+                    else if (item.EstimatedLengthSeconds == 60)
+                    {
+                        int min = item.EstimatedLength + 1;
+                        <p>@min minutes</p>
+                    }
+                    else
+                    {
+                        <p>@Html.DisplayFor(model => item.EstimatedLength) minutes and @Html.DisplayFor(model => item.EstimatedLengthSeconds) seconds</p>
+                    }
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Likes)
+            </td>
+            <td>
+                @{ var now = DateTime.Now;
+                    var oldDate = item.CreationDate;
+                    var difference = now - oldDate;
+                    var months = difference.Days / 30;
+                    var days = difference.Days;
+                    var hours = difference.Hours;
+                    var minutes = difference.Minutes;
+                    var seconds = difference.Seconds;}
+
+                @if (days == 0 && hours == 0 && minutes == 0)
+                {
+                    if (seconds == 1)
+                    {
+                        <p>@seconds second ago</p>
+                    }
+                    else
+                    {
+                        <p>@seconds seconds ago</p>
+                    }
+                }
+                else if (days == 0 && hours == 0 && minutes >= 1)
+                {
+                    if (minutes == 1)
+                    {
+                        <p>@minutes minute ago</p>
+                    }
+                    else
+                    {
+                        <p>@minutes minutes ago</p>
+                    }
+                }
+                else if (days == 0 && hours >= 1)
+                {
+                    if (hours == 1)
+                    {
+                        <p>@hours hour ago</p>
+                    }
+                    else
+                    {
+                        <p>@hours hour ago</p>
+                    }
+                }
+                else if (days < 31 && days >= 1)
+                {
+                    if (days == 1)
+                    {
+                        <p>@days day ago</p>
+                    }
+                    else
+                    {
+                        <p>@days days ago</p>
+                    }
+                }
+                else if (days < 365 && days >= 31)
+                {
+                    if (days == 30)
+                    {
+                        <p>1 month ago</p>
+                    }
+                    else
+                    {
+                        <p>@months months ago</p>
+                    }
+                }
+                else {
+                    <p>Over a year ago</p>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
