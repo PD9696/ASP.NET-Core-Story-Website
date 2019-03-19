@@ -218,6 +218,18 @@ namespace WebApplication3.Controllers
             var profile = await _context.Profile.FindAsync(id);
             var likes = _context.LikeList.Where(m => m.ProfileId == id);
             var followers = _context.FollowerList.Where(m => m.FollowerId == id);
+            var stories = _context.Story.Where(m => m.ProfileId == id);
+
+            foreach (var story in stories)
+            {
+                var likes2 = _context.LikeList.Where(m => m.StoryId == story.Id);
+
+                foreach (var like in likes2)
+                {
+                    _context.LikeList.Remove(like);
+                }
+            }
+            await _context.SaveChangesAsync();
 
             foreach (var like in likes) {
                 if (like.ProfileId == id)

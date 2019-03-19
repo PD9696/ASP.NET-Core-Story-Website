@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,15 +15,18 @@ namespace WebApplication3.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly ApplicationDbContext _context;
 
         public DeletePersonalDataModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         [BindProperty]
@@ -66,6 +70,42 @@ namespace WebApplication3.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
+            var likes = _context.LikeList.Where(m => m.ProfileId == user.ProfileId);
+            var followers = _context.FollowerList.Where(m => m.FollowerId == user.ProfileId);
+            var stories = _context.Story.Where(m => m.ProfileId == user.ProfileId);
+
+            foreach (var story in stories)
+            {
+                var likes2 = _context.LikeList.Where(m => m.StoryId == story.Id);
+
+                foreach (var like in likes2)
+                {
+                    _context.LikeList.Remove(like);
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            foreach (var like in likes)
+            {
+                if (like.ProfileId == user.ProfileId)
+                {
+                    var story = await _context.Story.FindAsync(like.StoryId);
+                    story.Likes--;
+                    _context.LikeList.Remove(like);
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            foreach (var follower in followers)
+            {
+                if (follower.FollowerId == user.ProfileId)
+                {
+                    var followed = await _context.Profile.FindAsync(follower.ProfileId);
+                    followed.Followers--;
+                    _context.FollowerList.Remove(follower);
+                }
+            }
+            await _context.SaveChangesAsync();
 
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);

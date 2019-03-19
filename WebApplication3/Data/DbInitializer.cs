@@ -12,6 +12,8 @@ namespace WebApplication3.Data
     {
         public static void Initialize(ApplicationDbContext context)
         {
+            context.Database.Migrate();
+
             if (context.LikeList.Any())
             {
                 return;

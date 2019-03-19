@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication3.Data;
 
-namespace WebApplication3.Data.Migrations
+namespace WebApplication3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -186,25 +186,6 @@ namespace WebApplication3.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("WebApplication3.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProfileId");
-
-                    b.Property<int>("StoryId");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(1000);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Comment");
-                });
-
             modelBuilder.Entity("WebApplication3.Models.FollowerList", b =>
                 {
                     b.Property<int>("ProfileId");
@@ -252,6 +233,10 @@ namespace WebApplication3.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OwnerId")
+                        .IsUnique()
+                        .HasFilter("[OwnerId] IS NOT NULL");
+
                     b.HasIndex("UserName")
                         .IsUnique();
 
@@ -265,7 +250,7 @@ namespace WebApplication3.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Author")
-                        .HasMaxLength(15);
+                        .HasMaxLength(20);
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -293,6 +278,8 @@ namespace WebApplication3.Data.Migrations
                         .HasMaxLength(150);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Story");
                 });
@@ -339,6 +326,22 @@ namespace WebApplication3.Data.Migrations
                     b.HasOne("WebApplication3.Data.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WebApplication3.Models.Profile", b =>
+                {
+                    b.HasOne("WebApplication3.Data.ApplicationUser")
+                        .WithOne()
+                        .HasForeignKey("WebApplication3.Models.Profile", "OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WebApplication3.Models.Story", b =>
+                {
+                    b.HasOne("WebApplication3.Models.Profile")
+                        .WithMany()
+                        .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

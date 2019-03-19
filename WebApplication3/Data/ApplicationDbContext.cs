@@ -28,6 +28,18 @@ namespace WebApplication3.Data
             modelBuilder.Entity<Profile>()
                 .HasIndex(u => u.UserName)
                 .IsUnique();
+
+            modelBuilder.Entity<Story>()
+                .HasOne("WebApplication3.Models.Profile")
+                .WithMany()
+                .HasForeignKey("ProfileId")
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Profile>()
+                .HasOne("WebApplication3.Data.ApplicationUser")
+                .WithOne()
+                .HasForeignKey(typeof(Profile).ToString(), "OwnerId")
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<WebApplication3.Models.Story> Story { get; set; }

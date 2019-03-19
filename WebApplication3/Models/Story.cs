@@ -31,7 +31,7 @@ namespace WebApplication3.Models
         [DataType(DataType.Date)]
         public DateTime CreationDate { get; set; }
 
-        [StringLength(15)]
+        [StringLength(20)]
         public string Author { get; set; }
 
         [RegularExpression(@"^[a-zA-Z0-9""'\s-$%#!?.,:;’/_–”“…]*$", ErrorMessage = "Only letters, numbers, or $ and # symbols are allowed")]

@@ -265,6 +265,14 @@ namespace WebApplication3.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var story = await _context.Story.FindAsync(id);
+            var likes = _context.LikeList.Where(m => m.StoryId == id);
+
+            foreach (var like in likes)
+            {
+                _context.LikeList.Remove(like);
+            }
+            await _context.SaveChangesAsync();
+
             _context.Story.Remove(story);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
