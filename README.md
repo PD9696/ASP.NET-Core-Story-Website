@@ -1,5 +1,5 @@
 # ASP.NET Core Story Website
-A website built with ASP.NET Core 2.1 using SQL Server where users can read and write stories. Bootstrap 4 design from: https://bootswatch.com/slate/.
+A website built with ASP.NET Core 2.1 using SQL Server where users can read and write stories.
 
 ![](Screenshots/samplestory.PNG)
 
@@ -20,7 +20,7 @@ A website built with ASP.NET Core 2.1 using SQL Server where users can read and 
    * **3.7.** Register Page
    * **3.8.** Sign In Page
    
-### 4. Architecture
+### 4. Additional Details
 
 # 1. Introduction
 
@@ -135,9 +135,9 @@ but they will need to do it eventually if they wish to write or like stories and
 
 Allows users to sign in. Sample seeded account email and password details are displayed for demonstration purposes.
 
-## 4. Architecture
+## 4. Additional Details
 
-**Razor Page (MVVM)** - The profile page and the account page.
+The profile page and the account page are both using Razor Page (MVVM) architecture, while the remainder of the pages use traditional MVC architecture.
 
-**Traditional MVC** - The remainder of the pages.
+The website design uses Bootstrap 4 and is from: https://bootswatch.com/slate/. A couple of custom CSS additions were made (story content text, etc).
 
