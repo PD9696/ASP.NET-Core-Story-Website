@@ -57,23 +57,25 @@ A simple landing page with a static picture and some text.
 ## 3.2. Story Search Page
 ![](Screenshots/storyfilter1.PNG)
 
-A page containing a sorting filter and along with all the stories in the database. Users may filter stories based on title, author, genre and estimated reading length. They may also order stories by most likes, least likes, newest post date or oldest post date.
+A page containing a sorting filter along with all the stories in the database. Users may filter stories based on title, author, genre and estimated reading length. They may also order stories by most likes, least likes, newest post date or oldest post date.
 
 ![](Screenshots/storyfilter2.PNG)
 
 ## 3.3. Writer Search Page
 ![](Screenshots/writerfilter.PNG)
 
-A page allowing users to search for writers by name. Users may also sort writers by most followers, least followers, newest join date and oldest join date. If the user is signed in, they may follow or unfollow writers directly from this list.
+Allows users to search for writers by name. Users may also sort writers by most followers, least followers, newest join date and oldest join date. If the user is signed in, they may follow or unfollow writers directly from this list.
 
 ## 3.4. Write Story Page
 ![](Screenshots/writestory1.PNG)
 
-A page allowing signed in users to write and post stories. Stories contain a title, genre and content.
+Allows signed in users to write and post stories. The user genated portion of a story contains a title, genre and content. Estimated reading length, post date and edit date are generated automatically.
 
 ![](Screenshots/writestory2.PNG)
 
 ## 3.5. Profile Page
+![](Screenshots/profilegif.gif)
+
 A profile page is associated with the user's public profile. It contains four parts which can be toggled asynchronously via the side navigation bar. If the user is viewing another user's profile, the option to follow or unfollow the profile appears. If the user is viewing their own profile, the option to edit their profile appears.
 
 ### 3.5.1. Profile's Stories Page
@@ -97,6 +99,8 @@ A list of all the users following the profile.
 A list of all the stories that the profile has liked.
 
 ## 3.6. Account Page
+![](Screenshots/accountgif.gif)
+
 An account page is associated with the user's private sign in information. It contains three parts which can be toggled asynchronously via the side navigation bar.
 
 ### 3.6.1. Account's Contact Information Page
