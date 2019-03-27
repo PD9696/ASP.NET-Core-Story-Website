@@ -96,8 +96,6 @@ A list of all the stories that the profile has liked.
 An account page is associated with the user's private sign in information. It contains three parts which can be toggled asynchronously via the side navigation bar.
 
 ### 3.6.1. Account's Contact Information Page
-![](Screenshots/account1.PNG)
-
 Allows users to change their email address and phone number.
 
 ### 3.6.2. Account's Password Page
