@@ -1,12 +1,12 @@
 # ASP.NET Core Story Website
-A website built with ASP.NET Core 2.1 using SQL Server where users can read and write stories.
+A website built with ASP.NET Core 2.1 using SQL Server where users can read and write stories. Hosted using Azure services at: https://storywriters.azurewebsites.net/
 
 ![](Screenshots/samplestory.PNG)
 
 # Table of Contents
 ### 1. Introduction
    * **1.1.** Brief Summary
-   * **1.2.** How to Run the App
+   * **1.2.** How to Run the App Locally
 
 ### 2. Database Model
 
@@ -27,7 +27,7 @@ A website built with ASP.NET Core 2.1 using SQL Server where users can read and 
 ## 1.1. Brief Summary
 Users may read stories and browse through writer profiles without creating an account. In order to write or like stories and follow other writers, users must register or sign in with an account and create a profile.
 
-## 1.2. How to Run the App
+## 1.2. How to Run the App Locally
 **1.** Make sure you have ASP.NET Core (version 2.1 or newer) along with SQL Server and NuGet.
 
 **2.** Build the solution in Visual Studio. Then run it on your local server (such as IIS Express). The database along with all sample data will be migrated and seeded automatically.
@@ -79,23 +79,15 @@ Allows signed in users to write and post stories. The user genated portion of a 
 A profile page is associated with the user's public profile. It contains four parts which can be toggled asynchronously via the side navigation bar. If the user is viewing another user's profile, the option to follow or unfollow the profile appears. If the user is viewing their own profile, the option to edit their profile appears.
 
 ### 3.5.1. Profile's Stories Page
-![](Screenshots/profile1.PNG)
-
 A list of all the stories the profile has written.
 
 ### 3.5.2. Profile's Biography Page
-![](Screenshots/profile2.PNG)
-
 The profile's biography.
 
 ### 3.5.3. Profile's Followers Page
-![](Screenshots/profile3.PNG)
-
 A list of all the users following the profile.
 
 ### 3.5.4. Profile's Liked Stories Page
-![](Screenshots/profile4.PNG)
-
 A list of all the stories that the profile has liked.
 
 ## 3.6. Account Page
@@ -109,18 +101,12 @@ An account page is associated with the user's private sign in information. It co
 Allows users to change their email address and phone number.
 
 ### 3.6.2. Account's Password Page
-![](Screenshots/account2.PNG)
-
 Allows users to change their password.
 
 ### 3.6.3. Account's Data Page
-![](Screenshots/account3.PNG)
-
 Allows users to delete their account (which would also delete their public profile and their stories) or to download a JSON file of their account and profile information.
 
 ## 3.7. Register Page
-![](Screenshots/register.PNG)
-
 Allows users to register an account.
 
 ### 3.7.1. Create Profile Page
@@ -141,7 +127,9 @@ Allows users to sign in. Sample seeded account email and password details are di
 
 ## 4. Additional Details
 
-The profile page and the account page are both using Razor Page (MVVM) architecture, while the remainder of the pages use traditional MVC architecture.
+ASP.Net Core's default Identity with authorization was scaffolded. The only change made was that the AspNetUsers table was given a "ProfileId" field to link to a specific profile.
+
+The profile pages and the account pages are both using Razor Page (MVVM) architecture, while the remainder of the site's pages use traditional MVC architecture.
 
 The website design uses Bootstrap 4 and is from: https://bootswatch.com/slate/. A couple of custom CSS additions were made (story content text, etc).
 
