@@ -17,7 +17,10 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="OwnerId" />
             <input type="hidden" asp-for="UserName" />
+            <input type="hidden" asp-for="Followers" />
+            <input type="hidden" asp-for="CreationDate" />
             <div class="form-group">
                 <label class="control-label">Quick Description</label>
                 <textarea asp-for="QuickDescription" cols="45" rows="3" class="form-control"></textarea>

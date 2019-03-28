@@ -159,7 +159,7 @@ namespace WebApplication3.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,OwnerId,UserName,QuickDescription,Biography")] Profile profile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,OwnerId,UserName,QuickDescription,Biography,Followers,CreationDate")] Profile profile)
         {
             if (id != profile.Id)
             {
@@ -173,7 +173,6 @@ namespace WebApplication3.Controllers
             {
                 try
                 {
-                    profile.SetOwnerId(userId);
                     _context.Update(profile);
                     await _context.SaveChangesAsync();
                 }
