@@ -1,5 +1,5 @@
 # ASP.NET Core Story Website
-A website built with ASP.NET Core 2.1 using SQL Server where users can read and write stories. Hosted using Azure services at: https://storywriters.azurewebsites.net/
+A website built with ASP.NET Core 2.1 using SQL Server where users can read and write stories. ~~Hosted using Azure services at: https://storywriters.azurewebsites.net/~~ This website is no longer hosted on any web server and can only be run locally.
 
 ![](Screenshots/samplestory.PNG)
 
